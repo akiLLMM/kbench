@@ -52,7 +52,7 @@ V3 Admin Vite 是一个精心制作的后台管理系统模板，基于 Vue3、V
 git clone https://github.com/un-pany/v3-admin-vite.git
 
 # 进入项目目录
-cd v3-admin-vite
+cd ai-knowledge-workbench
 
 # 安装依赖
 pnpm i

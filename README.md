@@ -52,7 +52,7 @@ V3 Admin Vite is a well-crafted backend management system template, built with p
 git clone https://github.com/un-pany/v3-admin-vite.git
 
 # Enter the project directory
-cd v3-admin-vite
+cd ai-knowledge-workbench
 
 # Install dependencies
 pnpm i

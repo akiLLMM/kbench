@@ -37,7 +37,7 @@
 ## 目录结构
 
 ```sh
-# v3-admin-vite
+# ai-knowledge-workbench
 ├─ .husky                # commit 时进行代码校验和格式化
 ├─ .vscode               # vscode 配置和插件
 ├─ public
