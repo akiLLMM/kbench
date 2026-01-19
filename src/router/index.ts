@@ -12,15 +12,6 @@ const Layouts = () => import("@/layouts/index.vue")
  */
 export const constantRoutes: RouteRecordRaw[] = [
   {
-    path: "/knowledge",
-    name: "Knowledge",
-    component: () => import("@/pages/knowledge/index.vue"),
-    meta: {
-      title: "Knowledge Base",
-      elIcon: "Collection"
-    }
-  },
-  {
     path: "/redirect",
     component: Layouts,
     meta: {
@@ -73,29 +64,40 @@ export const constantRoutes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: "/link",
+    path: "/chat",
+    name: "Chat",
+    component: () => import("@/pages/chat/Chat.vue"),
     meta: {
-      title: "文档链接",
-      elIcon: "Link"
-    },
-    children: [
-      {
-        path: "https://juejin.cn/post/7445151895121543209",
-        component: () => {},
-        name: "Link1",
-        meta: {
-          title: "中文文档"
-        }
-      },
-      {
-        path: "https://juejin.cn/column/7207659644487139387",
-        component: () => {},
-        name: "Link2",
-        meta: {
-          title: "新手教程"
-        }
-      }
-    ]
+      title: "AI Chat",
+      elIcon: "ChatDotRound"
+    }
+  },
+  {
+    path: "/knowledge",
+    name: "Knowledge",
+    component: () => import("@/pages/knowledge/index.vue"),
+    meta: {
+      title: "Knowledge Base",
+      elIcon: "Collection"
+    }
+  },
+  {
+    path: "/mcp",
+    name: "MCP",
+    component: () => import("@/pages/mcp/MCPTools.vue"),
+    meta: {
+      title: "MCP Tools",
+      elIcon: "Tools"
+    }
+  },
+  {
+    path: "/tasks",
+    name: "Tasks",
+    component: () => import("@/pages/tasks/TaskList.vue"),
+    meta: {
+      title: "Tasks / Logs",
+      elIcon: "List"
+    }
   }
 ]
 
