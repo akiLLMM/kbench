@@ -44,6 +44,14 @@ export async function streamRag(
   context: RagContext,
   onChunk: (chunk: string) => void
 ): Promise<void> {
+  // 模拟 20% 失败概率
+  const shouldFail = Math.random() < 0.2
+
+  if (shouldFail) {
+    await sleep(500)
+    throw new Error("RAG service unavailable")
+  }
+
   const fullAnswer = `
 【Mock Streaming RAG Answer】
 

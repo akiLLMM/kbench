@@ -6,6 +6,10 @@ import type { ChatMessage, ChatSession } from "../types"
 import { ref } from "vue"
 import { streamRag } from "@/pages/chat/services/rag.service.ts"
 
+const errorMessage = ref<string | null>(null)
+
+const lastQuestion = ref<string | null>(null)
+
 interface ChatContext {
   question: string
   knowledge: {
@@ -79,10 +83,16 @@ export function useChat(
   ) {
     if (!session.value || isThinking.value) return
 
-    // 1️ 记录用户消息
+    // 记录本次问题，用于 retry
+    lastQuestion.value = question
+
+    // 清空旧错误
+    errorMessage.value = null
+
+    // 记录用户消息
     sendUserMessage(question)
 
-    // 2 插入一条“空的 assistant 消息”
+    // 插入一条“空的 assistant 消息”
     const assistantMessage: ChatMessage = {
       id: Date.now().toString(),
       role: "assistant",
@@ -107,8 +117,13 @@ export function useChat(
           appendToLastAssistant(chunk)
         }
       )
+    } catch {
+      // 出错时：补一条错误提示
+      assistantMessage.content = "❌ 出现错误，暂时无法生成回答。"
+
+      errorMessage.value = "生成回答失败，请检查网络或稍后重试。"
     } finally {
-      // 5 结束 thinking
+      // 结束 thinking
       isThinking.value = false
     }
   }
@@ -124,11 +139,22 @@ export function useChat(
     }
   }
 
+  // streaming出现错误时处理方法
+  function retry(selectedKnowledgeIds: string[]) {
+    if (!lastQuestion.value) return
+    if (isThinking.value) return
+
+    ask(lastQuestion.value, selectedKnowledgeIds)
+  }
+
   return {
     session,
     isThinking,
+    errorMessage,
+    lastQuestion,
     createSession,
     ask,
+    retry,
     appendToLastAssistant,
     sendAssistantMessage
   }

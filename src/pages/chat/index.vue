@@ -11,7 +11,7 @@ const selectedKnowledgeIds = ref<string[]>([])
 const question = ref("")
 
 // 3 Chat 引擎（通过依赖注入消费 knowledge）
-const { session, createSession, ask, isThinking } = useChat(readyKnowledge)
+const { session, createSession, ask, isThinking, errorMessage, retry } = useChat(readyKnowledge)
 
 const messagesEl = ref<HTMLElement | null>(null)
 
@@ -188,6 +188,23 @@ function scrollToBottomAndResume() {
 
     <!-- 输入区 -->
     <section>
+      <div
+        v-if="errorMessage"
+        style="
+          color: #d93026;
+          font-size: 13px;
+          margin-bottom: 6px;
+        "
+      >
+        ⚠️ {{ errorMessage }}
+      </div>
+      <button
+        v-if="errorMessage && !isThinking"
+        @click="retry(selectedKnowledgeIds)"
+        style="margin-left: 8px; font-size: 12px"
+      >
+        🔄 重试
+      </button>
       <div
         v-if="selectedKnowledgeIds.length === 0"
         style="font-size: 12px; color: #999; margin-bottom: 4px;"
