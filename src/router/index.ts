@@ -66,7 +66,7 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/chat",
     name: "Chat",
-    component: () => import("@/pages/chat/Chat.vue"),
+    component: () => import("@/pages/chat/index.vue"),
     meta: {
       title: "AI Chat",
       elIcon: "ChatDotRound"
