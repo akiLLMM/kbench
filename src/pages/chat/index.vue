@@ -73,6 +73,14 @@ function onAsk() {
   ask(question.value, selectedKnowledgeIds.value)
   question.value = ""
 }
+
+// 立即回到底部
+function scrollToBottomAndResume() {
+  autoScroll.value = true
+  nextTick(() => {
+    scrollToBottom()
+  })
+}
 </script>
 
 <template>
@@ -122,6 +130,26 @@ function onAsk() {
         >
           🤖 正在思考中，请稍候…
         </div>
+        <!-- 回到底部按钮 -->
+        <button
+          v-if="!autoScroll"
+          @click="scrollToBottomAndResume"
+          style="
+            position: sticky;
+            bottom: 12px;
+            float: right;
+            margin-top: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            border-radius: 16px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          "
+        >
+          ⬇ 回到底部
+        </button>
       </div>
     </section>
 
