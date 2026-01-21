@@ -152,16 +152,22 @@ function scrollToBottomAndResume() {
         <div
           v-for="msg in session.messages"
           :key="msg.id"
+          class="chat-message"
+          :class="msg.role"
           style="margin-bottom: 8px"
         >
-          <strong>{{ msg.role }}：</strong>
-          <pre style="display: inline; white-space: pre-wrap">{{ msg.content }}</pre>
+          <div class="chat-bubble">
+            <pre style="display: inline; white-space: pre-wrap">{{ msg.content }}</pre>
+          </div>
         </div>
         <div
           v-if="isThinking"
+          class="chat-message assistant"
           style="margin-top: 8px; color: #888"
         >
-          🤖 正在思考中，请稍候…
+          <div class="chat-bubble thinking">
+            🤖 正在思考中，请稍候…
+          </div>
         </div>
         <!-- 回到底部按钮 -->
         <button
@@ -228,3 +234,50 @@ function scrollToBottomAndResume() {
     </section>
   </div>
 </template>
+
+<style scoped>
+.chat-message {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+/* 用户消息：右侧 */
+.chat-message.user {
+  justify-content: flex-end;
+}
+
+/* AI 消息：左侧 */
+.chat-message.assistant {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  line-height: 1.6;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 用户气泡样式 */
+.chat-message.user .chat-bubble {
+  background-color: #1677ff;
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+/* AI 气泡样式 */
+.chat-message.assistant .chat-bubble {
+  background-color: #f5f5f5;
+  color: #333;
+  border-bottom-left-radius: 4px;
+}
+
+/* thinking 状态稍微弱一点 */
+.chat-bubble.thinking {
+  font-style: italic;
+  color: #666;
+}
+</style>
