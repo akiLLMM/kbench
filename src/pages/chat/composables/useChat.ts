@@ -147,6 +147,14 @@ export function useChat(
     ask(lastQuestion.value, selectedKnowledgeIds)
   }
 
+  //  重新生成回答
+  function regenerate(selectedKnowledgeIds: string[]) {
+    if (!lastQuestion.value) return
+    if (isThinking.value) return
+
+    ask(lastQuestion.value, selectedKnowledgeIds)
+  }
+
   return {
     session,
     isThinking,
@@ -155,6 +163,7 @@ export function useChat(
     createSession,
     ask,
     retry,
+    regenerate,
     appendToLastAssistant,
     sendAssistantMessage
   }

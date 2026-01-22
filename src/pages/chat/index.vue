@@ -11,7 +11,7 @@ const selectedKnowledgeIds = ref<string[]>([])
 const question = ref("")
 
 // 3 Chat 引擎（通过依赖注入消费 knowledge）
-const { session, createSession, ask, isThinking, errorMessage, retry } = useChat(readyKnowledge)
+const { session, createSession, ask, isThinking, errorMessage, retry, regenerate } = useChat(readyKnowledge)
 
 const messagesEl = ref<HTMLElement | null>(null)
 
@@ -22,6 +22,10 @@ const isEmptyChat = computed(() => {
 
 // 是否自动滚动（用户手动上滑后可关闭）
 const autoScroll = ref(true)
+
+// 复制AI回复内容
+const copiedId = ref<string | null>(null)
+const copyError = ref<string | null>(null)
 
 function scrollToBottom() {
   const el = messagesEl.value
@@ -87,6 +91,26 @@ function scrollToBottomAndResume() {
     scrollToBottom()
   })
 }
+
+// 复制回复内容
+async function copyMessage(msgId: string, content: string) {
+  try {
+    await navigator.clipboard.writeText(content)
+    copiedId.value = msgId
+    copyError.value = null
+    // 1.5 秒后恢复
+    setTimeout(() => {
+      if (copiedId.value === msgId) {
+        copiedId.value = null
+      }
+    }, 1500)
+  } catch {
+    copyError.value = "复制失败"
+    setTimeout(() => {
+      copyError.value = null
+    }, 1500)
+  }
+}
 </script>
 
 <template>
@@ -150,7 +174,7 @@ function scrollToBottomAndResume() {
         @scroll="updateAutoScroll"
       >
         <div
-          v-for="msg in session.messages"
+          v-for="(msg, index) in session.messages"
           :key="msg.id"
           class="chat-message"
           :class="msg.role"
@@ -161,6 +185,31 @@ function scrollToBottomAndResume() {
             🤖
           </div>
           <div class="chat-bubble">
+            <!-- 操作按钮区（Copy + Regenerate） -->
+            <div
+              v-if="msg.role === 'assistant'"
+              class="bubble-actions"
+            >
+              <!-- Copy -->
+              <button
+                type="button"
+                class="action-btn"
+                @click="copyMessage(msg.id, msg.content)"
+              >
+                {{ copiedId === msg.id ? "✓ 已复制" : "复制" }}
+              </button>
+
+              <!-- Regenerate（只给最后一条 assistant） -->
+              <button
+                v-if="index === session.messages.length - 1 && !isThinking"
+                type="button"
+                class="action-btn"
+                @click="regenerate(selectedKnowledgeIds)"
+              >
+                🔄 重新生成
+              </button>
+            </div>
+
             <pre style="display: inline; white-space: pre-wrap">{{ msg.content }}</pre>
           </div>
           <!-- user 头像（右） -->
@@ -270,6 +319,7 @@ function scrollToBottomAndResume() {
   font-size: 14px;
   white-space: pre-wrap;
   word-break: break-word;
+  position: relative;
 }
 
 /* 用户气泡样式 */
@@ -331,5 +381,40 @@ function scrollToBottomAndResume() {
 .chat-avatar.assistant {
   background: #eee;
   color: #555;
+}
+.chat-bubble {
+  position: relative;
+}
+
+/* 操作按钮容器 */
+.bubble-actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+/* hover assistant 气泡时显示 */
+.chat-message.assistant .chat-bubble:hover .bubble-actions {
+  opacity: 1;
+}
+
+/* 按钮通用样式 */
+.action-btn {
+  font-size: 12px;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.05);
+  color: #555;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background: rgba(0, 0, 0, 0.12);
 }
 </style>
