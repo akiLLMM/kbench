@@ -7,6 +7,10 @@ const props = defineProps<{
   list: KnowledgeItem[]
 }>()
 
+defineEmits<{
+  (e: "create"): void
+}>()
+
 const isEmpty = computed(() => props.list.length === 0)
 </script>
 
