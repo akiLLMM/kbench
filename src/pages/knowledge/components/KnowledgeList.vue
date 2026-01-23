@@ -40,8 +40,19 @@ const isEmpty = computed(() => props.list.length === 0)
   <ul v-else class="list-ul">
     <li v-for="item in props.list" :key="item.id" class="list-item">
       <span class="item-title">{{ item.title }}</span>
-      <span v-if="item.status === 'processing'" class="status-badge status-processing" aria-label="processing">⏳ 处理中</span>
-      <span v-else class="status-badge status-ready" aria-label="ready">✅ 已完成</span>
+
+      <!-- 行内 status badge：processing 显示 spinner -->
+      <span
+        class="badge"
+        :class="item.status"
+        :title="item.status === 'processing' ? '处理中 - 稍后可用' : '已完成 - 可在 Chat 中使用'"
+        :aria-label="item.status"
+      >
+        <span v-if="item.status === 'processing'" class="spinner" aria-hidden="true" />
+        <span class="badge-text">
+          {{ item.status === 'processing' ? '处理中' : '已完成' }}
+        </span>
+      </span>
     </li>
   </ul>
 </template>
@@ -101,20 +112,54 @@ const isEmpty = computed(() => props.list.length === 0)
   font-size: 14px;
   color: #222;
 }
-.status-badge {
-  font-size: 13px;
+
+/* badge 基础样式 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 4px 8px;
-  border-radius: 12px;
+  border-radius: 999px;
+  font-size: 13px;
   white-space: nowrap;
+  min-height: 28px;
+  box-sizing: border-box;
 }
-.status-processing {
+
+/* processing 风格（带 spinner）*/
+.badge.processing {
   background: #fff7e6;
-  color: #d48806;
+  color: #ad6a00;
   border: 1px solid #ffe7ba;
 }
-.status-ready {
+
+/* ready 风格 */
+.badge.ready {
   background: #f6ffed;
-  color: #52c41a;
+  color: #237804;
   border: 1px solid #b7eb8f;
+}
+
+/* 小圆形 spinner */
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-top-color: rgba(0, 0, 0, 0.36);
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 文字对齐微调 */
+.badge-text {
+  line-height: 1;
 }
 </style>
