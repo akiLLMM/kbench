@@ -1,9 +1,30 @@
 import type { KnowledgeItem } from "@/pages/knowledge/types"
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
 
-// 【关键修改】将状态定义移到函数外部（单例模式）
-// 这样 Knowledge 页面和 Chat 页面共享同一份内存数据
-const list = ref<KnowledgeItem[]>([])
+const STORAGE_KEY = "ai-workbench-knowledge-list"
+
+// 初始化：从 localStorage 读取
+function loadFromStorage(): KnowledgeItem[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    const parsed = raw ? JSON.parse(raw) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+// 【关键修改】单例 + 持久化
+const list = ref<KnowledgeItem[]>(loadFromStorage())
+
+// 自动持久化（深度监听）
+watch(
+  list,
+  (val) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
+  },
+  { deep: true }
+)
 
 export function useKnowledge() {
   const readyKnowledge = computed(() =>

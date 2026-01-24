@@ -1,32 +1,25 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from "vue" // 补全 computed, watch, nextTick 引用
-import { useRoute } from "vue-router" // 1. 引入 useRoute
+import { computed, nextTick, onMounted, ref, watch } from "vue"
+import { useRoute } from "vue-router"
 import { useKnowledge } from "../knowledge/composables/useKnowledge"
 import { useChat } from "./composables/useChat"
 
-const route = useRoute() // 2. 获取路由实例
-
-// 1 读取 Knowledge（只读视图）
+const route = useRoute()
 const { readyKnowledge } = useKnowledge()
 
-// 2 页面级 UI 状态
 const selectedKnowledgeIds = ref<string[]>([])
 const question = ref("")
 
-// 3 Chat 引擎（通过依赖注入消费 knowledge）
 const { session, createSession, ask, isThinking, errorMessage, retry, regenerate } = useChat(readyKnowledge)
 
 const messagesEl = ref<HTMLElement | null>(null)
 
-// 判断chat空状态引导
 const isEmptyChat = computed(() => {
   return session.value && session.value.messages.length === 0
 })
 
-// 是否自动滚动（用户手动上滑后可关闭）
 const autoScroll = ref(true)
 
-// 复制AI回复内容
 const copiedId = ref<string | null>(null)
 const copyError = ref<string | null>(null)
 
@@ -41,11 +34,9 @@ function updateAutoScroll() {
   if (!el) return
 
   const distanceToBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-  // 离底部很近就认为用户希望自动滚动
   autoScroll.value = distanceToBottom < 24
 }
 
-// 监听消息列表长度变化：新消息出现时滚到底部
 watch(
   () => session.value?.messages.length,
   async () => {
@@ -55,7 +46,6 @@ watch(
   }
 )
 
-// 监听 streaming：assistant 最后一条消息内容变化时也滚动
 watch(
   () => {
     const messages = session.value?.messages
@@ -93,6 +83,21 @@ onMounted(() => {
   }
 })
 
+// 监听路由参数 + readyKnowledge，就绪后自动选中
+watch(
+  () => [route.query.knowledge, readyKnowledge.value],
+  () => {
+    const id = route.query.knowledge as string | undefined
+    if (!id) return
+
+    const exists = readyKnowledge.value.some(k => k.id === id)
+    if (exists && !selectedKnowledgeIds.value.includes(id)) {
+      selectedKnowledgeIds.value.push(id)
+    }
+  },
+  { immediate: true }
+)
+
 function onEnter() {
   if (isThinking.value) return
   if (!question.value.trim()) return
@@ -101,7 +106,6 @@ function onEnter() {
   question.value = ""
 }
 
-// 立即回到底部
 function scrollToBottomAndResume() {
   autoScroll.value = true
   nextTick(() => {
@@ -109,13 +113,11 @@ function scrollToBottomAndResume() {
   })
 }
 
-// 复制回复内容
 async function copyMessage(msgId: string, content: string) {
   try {
     await navigator.clipboard.writeText(content)
     copiedId.value = msgId
     copyError.value = null
-    // 1.5 秒后恢复
     setTimeout(() => {
       if (copiedId.value === msgId) {
         copiedId.value = null
