@@ -15,6 +15,7 @@ export interface RagResult {
 export async function askRag(
   context: RagContext
 ): Promise<RagResult> {
+  // 仍保留 mock 版本（可选）
   await sleep(800)
 
   const titles = context.knowledge
@@ -40,33 +41,37 @@ function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+/**
+ * 流式调用：改成真实 fetch("/api/chat/stream")
+ */
 export async function streamRag(
   context: RagContext,
   onChunk: (chunk: string) => void
 ): Promise<void> {
-  // 模拟 20% 失败概率
-  const shouldFail = Math.random() < 0.2
+  const response = await fetch("/api/chat/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      question: context.question,
+      knowledge: context.knowledge
+    })
+  })
 
-  if (shouldFail) {
-    await sleep(500)
-    throw new Error("RAG service unavailable")
+  if (!response.ok) {
+    throw new Error(`Chat API Error: ${response.status}`)
   }
 
-  const fullAnswer = `
-【Mock Streaming RAG Answer】
+  if (!response.body) {
+    throw new Error("Empty response body")
+  }
 
-问题：
-${context.question}
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder("utf-8")
 
-参考知识：
-${context.knowledge.map(k => `- ${k.title}`).join("\n")}
-
-这是一个逐字输出的示例回答。
-`.trim()
-
-  // 模拟逐字 / 逐词输出
-  for (const char of fullAnswer) {
-    await sleep(30)
-    onChunk(char)
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    const chunk = decoder.decode(value, { stream: true })
+    onChunk(chunk)
   }
 }

@@ -5,6 +5,8 @@ import { pinia } from "@/pinia"
 import { router } from "@/router"
 import { installPlugins } from "@/plugins"
 import App from "@/App.vue"
+// mocks
+import { enableMocking } from "@/mocks"
 // css
 import "normalize.css"
 import "nprogress/nprogress.css"
@@ -23,6 +25,7 @@ installPlugins(app)
 app.use(pinia).use(router)
 
 // router 准备就绪后挂载应用
-router.isReady().then(() => {
+enableMocking().then(async () => {
+  await router.isReady()
   app.mount("#app")
 })

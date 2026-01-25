@@ -46,6 +46,7 @@
     "happy-dom": "20.0.11",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
+    "msw": "2.12.7",
     "sass-embedded": "1.78.0",
     "typescript": "5.9.3",
     "unocss": "66.5.10",
@@ -60,5 +61,10 @@
   },
   "lint-staged": {
     "*": "eslint --fix"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

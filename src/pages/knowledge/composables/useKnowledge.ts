@@ -1,5 +1,6 @@
 import type { KnowledgeItem } from "@/pages/knowledge/types"
 import { computed, ref, watch } from "vue"
+import { fetchKnowledgeList } from "../services/knowledge.service"
 
 const STORAGE_KEY = "ai-workbench-knowledge-list"
 
@@ -31,6 +32,10 @@ export function useKnowledge() {
     list.value.filter(item => item.status === "ready")
   )
 
+  async function loadList() {
+    list.value = await fetchKnowledgeList()
+  }
+
   function addKnowledge(title: string) {
     const item: KnowledgeItem = {
       id: Date.now().toString(),
@@ -60,6 +65,7 @@ export function useKnowledge() {
   return {
     list,
     readyKnowledge,
+    loadList,
     addKnowledge,
     removeKnowledge
   }
