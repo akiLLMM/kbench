@@ -3,25 +3,28 @@
 .app-wrapper {
   // 侧边栏
   .sidebar-container {
-    background-color: var(--el-bg-color);
+    background-color: #f7f9fc; /* 更干净的浅灰白 */
     .el-menu {
-      background-color: var(--el-bg-color);
+      background-color: #f7f9fc;
+      color: #1f2937; /* 深灰文字 */
       .el-menu-item {
-        background-color: var(--el-bg-color);
+        background-color: #f7f9fc;
+        color: #1f2937;
         &.is-active,
         &:hover {
-          background-color: var(--el-bg-color-overlay);
-          color: #ffffff;
+          background-color: #e9f1ff; /* 浅蓝 hover */
+          color: #1e3a8a; /* 深蓝强调 */
         }
       }
     }
     .el-sub-menu__title {
-      background-color: var(--el-bg-color);
+      background-color: #f7f9fc;
+      color: #1f2937;
     }
     .el-sub-menu {
       &.is-active {
         > .el-sub-menu__title {
-          color: #ffffff;
+          color: #1e3a8a; /* 深蓝强调 */
         }
       }
     }

@@ -54,6 +54,16 @@
   --el-color-primary-light-8: #2f6bff33;
   --el-color-primary-light-9: #2f6bff1a;
   --el-color-primary-dark-2: #1e4fd6;
+
+  /* Sidebar 配色（浅色方案） */
+  --v3-sidebar-menu-bg-color: #f7f9fc;
+  --v3-sidebar-menu-hover-bg-color: #e9f1ff;
+  --v3-sidebar-menu-text-color: #1f2937;
+  --v3-sidebar-menu-active-text-color: #1e3a8a;
+  --v3-sidebar-menu-tip-line-bg-color: #2f6bff;
+
+  /* 右侧面板按钮同色系 */
+  --v3-rightpanel-button-bg-color: #e9f1ff;
 }
 
 /* 内容区放大时，将不需要的组件隐藏 */
