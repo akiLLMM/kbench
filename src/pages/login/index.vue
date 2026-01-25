@@ -221,7 +221,6 @@ createCode()
   box-shadow: var(--login-shadow);
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .brand {
