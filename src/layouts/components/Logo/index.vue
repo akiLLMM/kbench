@@ -24,12 +24,12 @@ onMounted(() => {
 <template>
   <div class="layout-logo-container" :class="{ 'collapse': collapse, 'layout-mode-top': isTop }">
     <transition name="layout-logo-fade" mode="out-in">
-      <router-link v-show="collapse" key="collapse" to="/">
+      <router-link v-show="collapse" key="collapse" to="/dashboard">
         <img :src="logo" class="layout-logo">
       </router-link>
     </transition>
     <transition name="layout-logo-fade" mode="out-in">
-      <router-link v-show="!collapse" key="expand" to="/">
+      <router-link v-show="!collapse" key="expand" to="/dashboard">
         <img :src="!isLeft ? logoText2 : logoText1" class="layout-logo-text">
       </router-link>
     </transition>

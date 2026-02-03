@@ -11,6 +11,14 @@ const Layouts = () => import("@/layouts/index.vue")
  * @description 除了 redirect/403/404/login 等隐藏页面，其他页面建议设置唯一的 Name 属性
  */
 export const constantRoutes: RouteRecordRaw[] = [
+  // 登录 / 重定向
+  {
+    path: "/login",
+    component: () => import("@/pages/login/index.vue"),
+    meta: {
+      hidden: true
+    }
+  },
   {
     path: "/redirect",
     component: Layouts,
@@ -24,38 +32,16 @@ export const constantRoutes: RouteRecordRaw[] = [
       }
     ]
   },
-  {
-    path: "/403",
-    component: () => import("@/pages/error/403.vue"),
-    meta: {
-      hidden: true
-    }
-  },
-  {
-    path: "/404",
-    component: () => import("@/pages/error/404.vue"),
-    meta: {
-      hidden: true
-    },
-    alias: "/:pathMatch(.*)*"
-  },
-  {
-    path: "/login",
-    component: () => import("@/pages/login/index.vue"),
-    meta: {
-      hidden: true
-    }
-  },
+  // 业务路由
   // ================= Layout A：Dashboard区 =================
   {
-    path: "/",
+    path: "/dashboard",
     component: Layouts,
-    redirect: "/dashboard",
     children: [
       {
-        path: "dashboard",
-        component: () => import("@/pages/dashboard/index.vue"),
+        path: "",
         name: "Dashboard",
+        component: () => import("@/pages/dashboard/index.vue"),
         meta: {
           title: "首页",
           svgIcon: "dashboard",
@@ -66,12 +52,12 @@ export const constantRoutes: RouteRecordRaw[] = [
   },
   // ================= Layout B：业务功能区 =================
   {
-    path: "/",
+    path: "/chat",
     component: Layouts,
-    redirect: "/chat",
+    redirect: "/chat/index",
     children: [
       {
-        path: "chat",
+        path: "index",
         name: "Chat",
         component: () => import("@/pages/chat/index.vue"),
         meta: {
@@ -84,10 +70,10 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/knowledge",
     component: Layouts,
-    redirect: "/knowledge",
+    redirect: "/knowledge/index",
     children: [
       {
-        path: "",
+        path: "index",
         name: "Knowledge",
         component: () => import("@/pages/knowledge/index.vue"),
         meta: {
@@ -100,9 +86,10 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/mcp",
     component: Layouts,
+    redirect: "/mcp/index",
     children: [
       {
-        path: "",
+        path: "index",
         name: "MCP",
         component: () => import("@/pages/mcp/MCPTools.vue"),
         meta: {
@@ -115,9 +102,10 @@ export const constantRoutes: RouteRecordRaw[] = [
   {
     path: "/tasks",
     component: Layouts,
+    redirect: "/tasks/index",
     children: [
       {
-        path: "",
+        path: "index",
         name: "Tasks",
         component: () => import("@/pages/tasks/TaskList.vue"),
         meta: {
@@ -126,6 +114,23 @@ export const constantRoutes: RouteRecordRaw[] = [
         }
       }
     ]
+  },
+  // 错误页 403
+  {
+    path: "/403",
+    component: () => import("@/pages/error/403.vue"),
+    meta: {
+      hidden: true
+    }
+  },
+  // 兜底 404
+  {
+    path: "/404",
+    component: () => import("@/pages/error/404.vue"),
+    meta: {
+      hidden: true
+    },
+    alias: "/:pathMatch(.*)*"
   }
 ]
 

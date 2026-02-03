@@ -3,7 +3,7 @@
     <div class="error-svg">
       <slot />
     </div>
-    <router-link to="/">
+    <router-link to="/dashboard">
       <el-button type="primary">
         回到首页
       </el-button>

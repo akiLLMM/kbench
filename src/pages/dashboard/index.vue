@@ -2,6 +2,10 @@
 import { BookOpen, ListTodo, MessageCircle, Plug } from "lucide-vue-next"
 import WelcomeOverlay from "./components/WelcomeOverlay.vue"
 
+defineOptions({
+  name: "Dashboard"
+})
+
 const showWelcome = ref(
   localStorage.getItem("welcome_seen") !== "true"
 )

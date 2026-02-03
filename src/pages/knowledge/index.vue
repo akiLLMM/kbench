@@ -4,6 +4,10 @@ import KnowledgeEditor from "./components/KnowledgeEditor.vue"
 import KnowledgeList from "./components/KnowledgeList.vue"
 import { useKnowledge } from "./composables/useKnowledge"
 
+defineOptions({
+  name: "Knowledge"
+})
+
 const { list, addKnowledge, loadList } = useKnowledge()
 // 引用编辑器组件以便从列表的“新增”按钮触发聚焦编辑器
 const editorRef = ref<any>(null)

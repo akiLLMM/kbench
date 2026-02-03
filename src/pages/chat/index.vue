@@ -14,6 +14,10 @@ import { useRoute } from "vue-router"
 import { useKnowledge } from "../knowledge/composables/useKnowledge"
 import { useChat } from "./composables/useChat"
 
+defineOptions({
+  name: "Chat"
+})
+
 const route = useRoute()
 const { readyKnowledge } = useKnowledge()
 

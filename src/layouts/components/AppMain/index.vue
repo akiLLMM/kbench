@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useRoute } from "vue-router"
 import { useSettingsStore } from "@/pinia/stores/settings"
 import { useTagsViewStore } from "@/pinia/stores/tags-view"
 import { Footer } from "../index"
@@ -6,16 +7,17 @@ import { Footer } from "../index"
 const tagsViewStore = useTagsViewStore()
 
 const settingsStore = useSettingsStore()
+const route = useRoute()
 </script>
 
 <template>
   <section class="app-main">
     <div class="app-scrollbar">
       <!-- key 采用 route.path 和 route.fullPath 有着不同的效果，大多数时候 path 更通用 -->
-      <router-view v-slot="{ Component, route }">
+      <router-view v-slot="{ Component }" :key="route.fullPath">
         <transition name="el-fade-in" mode="out-in">
           <keep-alive :include="tagsViewStore.cachedViews">
-            <component :is="Component" :key="route.path" class="app-container-grow" />
+            <component :is="Component" class="app-container-grow" />
           </keep-alive>
         </transition>
       </router-view>

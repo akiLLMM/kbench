@@ -60,7 +60,7 @@ function handleLogin() {
     loading.value = true
     loginApi(loginFormData).then(({ data }) => {
       userStore.setToken(data.token)
-      router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/")
+      router.push(route.query.redirect ? decodeURIComponent(route.query.redirect as string) : "/dashboard")
     }).catch(() => {
       createCode()
       loginFormData.password = ""

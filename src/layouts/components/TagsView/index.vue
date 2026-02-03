@@ -47,7 +47,7 @@ function isAffix(tag: TagView) {
 }
 
 /** 筛选出固定标签页 */
-function filterAffixTags(routes: RouteRecordRaw[], basePath = "/") {
+function filterAffixTags(routes: RouteRecordRaw[], basePath = "/dashboard") {
   const tags: TagView[] = []
   routes.forEach((route) => {
     if (isAffix(route)) {
@@ -127,7 +127,7 @@ function toLastView(visitedViews: TagView[], view: TagView) {
       // 重新加载主页
       router.push({ path: `/redirect${view.path}`, query: view.query })
     } else {
-      router.push("/")
+      router.push("/dashboard")
     }
   }
 }
