@@ -1,4 +1,4 @@
-import type { RouteRecordRaw } from "vue-router"
+import type { Router, RouteRecordRaw } from "vue-router"
 import { pinia } from "@/pinia"
 import { constantRoutes, dynamicRoutes } from "@/router"
 import { routerConfig } from "@/router/config"
@@ -30,6 +30,9 @@ export const usePermissionStore = defineStore("permission", () => {
   // 有访问权限的动态路由
   const addRoutes = ref<RouteRecordRaw[]>([])
 
+  // 标志位， 是否加入路由
+  const isRoutesAdded = ref(false)
+
   // 根据角色生成可访问的 Routes（可访问的路由 = 常驻路由 + 有访问权限的动态路由）
   const setRoutes = (roles: string[]) => {
     const accessedRoutes = filterDynamicRoutes(dynamicRoutes, roles)
@@ -47,7 +50,15 @@ export const usePermissionStore = defineStore("permission", () => {
     addRoutes.value = routerConfig.thirdLevelRouteCache ? flatMultiLevelRoutes(accessedRoutes) : accessedRoutes
   }
 
-  return { routes, addRoutes, setRoutes, setAllRoutes }
+  const addDynamicRoutes = (router: Router) => {
+    if (isRoutesAdded.value) return
+    addRoutes.value.forEach((route) => {
+      router.addRoute(route)
+    })
+    isRoutesAdded.value = true
+  }
+
+  return { routes, addRoutes, setRoutes, setAllRoutes, addDynamicRoutes, isRoutesAdded }
 })
 
 /**

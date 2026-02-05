@@ -27,6 +27,15 @@ export default defineConfig(({ mode }) => {
     },
     // 开发环境服务器配置
     server: {
+      watch: {
+        ignored: [
+          "**/types/**",
+          "**/*.d.ts"
+        ]
+      },
+      hmr: {
+        overlay: false
+      },
       // 是否监听所有地址
       host: true,
       // 端口号

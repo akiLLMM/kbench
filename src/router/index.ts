@@ -13,6 +13,10 @@ const Layouts = () => import("@/layouts/index.vue")
 export const constantRoutes: RouteRecordRaw[] = [
   // 登录 / 重定向
   {
+    path: "/",
+    redirect: "/dashboard"
+  },
+  {
     path: "/login",
     component: () => import("@/pages/login/index.vue"),
     meta: {
