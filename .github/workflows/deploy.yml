@@ -1,35 +1,43 @@
-name: Build And Deploy ai-knowledge-workbench
+name: Deploy Vite site to GitHub Pages
 
 on:
   push:
     branches:
-      - main
+      - master
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          persist-credentials: false
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@master
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: 22.16.0
+          version: 8
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v4
         with:
-          version: 10.12.1
+          node-version: 18
+          cache: pnpm
 
-      - name: Build
-        run: pnpm install && pnpm build
+      - run: pnpm install
+      - run: pnpm build
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+      - uses: actions/upload-pages-artifact@v3
         with:
-          ACCESS_TOKEN: ${{ secrets.V3_ADMIN_VITE }}
-          BRANCH: gh-pages
-          FOLDER: dist
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-pages@v4
